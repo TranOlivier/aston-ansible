@@ -109,7 +109,8 @@
 
 - name: write .my.cnf file in root directory
   template: src=my.cnf.j2 dest=/root/.my.cnf mode=0600
-
+  notify:
+    - mysql restart
 
 - name: Remove anonymous users
   mysql_user: name="" state=absent
