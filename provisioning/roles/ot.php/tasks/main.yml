@@ -1,0 +1,27 @@
+---
+# tasks file for ot.php
+
+  - name: yum install epel
+    yum: name=epel-release.noarch state=latest
+
+  - name: install required repositories
+    get_url: url=https://files.phpmyadmin.net/phpMyAdmin/4.7.2/phpMyAdmin-4.7.2-all-languages.zip
+
+  - name: unzip package
+    yum: unzip phpMyAdmin-4.7.2-all-languages.zip
+
+  - name: config ownership
+    command: chown -R apache.apache phpMyAdmin
+
+  - name: config ownership
+    command: chmod -R 755 phpMyAdmin
+
+  - name: copy config.sample file to config.ini.php
+    command: cp config.sample.inc.php config.inc.php
+
+
+  - name: config of config.inc.php
+
+
+  - name: enable httpd
+    service: name=httpd enabled=yes state=started

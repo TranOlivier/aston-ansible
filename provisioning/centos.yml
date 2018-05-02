@@ -1,0 +1,13 @@
+---
+- hosts: centos
+  tasks:
+    - name: Create file
+      command: touch /home/centos/hostname.conf
+      args:
+        creates: /home/centos/hostname.conf
+    - name: add hostname to config
+      lineinfile:
+        dest: /home/centos/hostname.conf
+        regexp: ^Hostname=.*
+        insertafter:  ^# Hostname=
+        line: Hostname={{ ansible_hostname }}

@@ -1,0 +1,14 @@
+---
+- hosts: centos
+  become: true
+  tasks:
+    - name: Install required package desu
+      yum: name=httpd state=present update_cache=yes
+    - name: create file desu
+      file: state=touch path=/var/www/html/index.html
+    - name: now add a line desu
+      lineinfile:
+        dest: /var/www/html/index.html
+        regexp: ^Hostname=.*
+        insertafter:  ^# Hostname=
+        line: Hostname = {{ ansible_hostname }}

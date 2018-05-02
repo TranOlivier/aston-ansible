@@ -1,0 +1,10 @@
+---
+- hosts: centos
+  become: true
+  tasks:
+    - name: Install required packages desu
+      yum: name={{item}} state=present update_cache=yes
+      with_items:
+        - htop
+        - iotop
+        - iftop

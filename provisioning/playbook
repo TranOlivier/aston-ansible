@@ -1,0 +1,35 @@
+---
+#- hosts: all
+#  become: true
+#  tasks:
+#    - name: Make sure that we can connect to the spirit machine desu
+#      ping:
+#    - name: Install PHP desu
+      # become: true
+#      apt: name=php5-cli state=present update_cache=yes
+#    - name: Install nginx desu
+#      apt: name=nginx state=present
+#    - name: Install mySQL desu
+#      apt: name=mysql-server-5.6 state=present
+
+
+#    - name: Install required packages desu
+#      apt: name={{item}} state=present update_cache=yes
+#      with_items:
+#        - php5-cli
+#        - nginx
+#        - mysql-server-5.6
+
+#- hosts: centos
+#  vars_prompt:
+#   - name: "is_true"
+#      prompt: "Entrer votre valeur true ou false"
+#      private: no
+#  tasks:
+#    - name: create file
+#      file: state=touch path=/home/centos/xyz.conf
+#      when: is_true == "true"
+
+- hosts: all
+  roles:
+    - geerlingguy.git

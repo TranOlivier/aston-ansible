@@ -1,0 +1,9 @@
+---
+- name: Deploy  Mysql/Httpd/Wordpress
+  hosts: centos
+  become: true
+  roles:
+    - { role: ot.mysql, tags: mysql}
+    - { role: ot.httpd, tags: web }
+    - { role: ot.wordpress, tags: wordpress}
+

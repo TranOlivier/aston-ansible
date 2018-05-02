@@ -1,0 +1,120 @@
+---
+# tasks file for ot.mysql
+#
+#  - name: adding epel repo
+#    package: name={{item}} state=installed
+#    with_items:
+#      - epel-release
+#
+#  - name: Get YUM repository for MySQL
+#    get_url:
+#      url: http://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm
+#      dest: /tmp/mysql57-community-release-el7-7.noarch.rpm
+#
+#  - name: Install YUM repository for MySQL
+#    shell: /bin/rpm -Uvh /tmp/mysql57-community-release-el7-7.noarch.rpm
+#    register: yum_repo_resturn
+#    failed_when: "'conflict' in yum_repo_return.stderr"
+#
+#  - name: Install MySQL community server
+#    yum:
+#      name: mysql-community-server
+#      state: present
+#
+#  - name: Launch MySQL service
+#    service:
+#      name: mysqld
+#      state: started
+#      enabled: yes
+#
+#  - name: Install required python MySQLdb lib to create databases and users
+#    yum:
+#      name: "{{item}}"
+#      state: present
+#    with_items:
+#      - gcc-c++
+#      - MySQL-python
+#
+#
+#  - name: Set the MySQL root password
+#    shell: mysqladmin -u root --password="password" password "password"
+#    register: mysql_admin_root_password_result
+#    failed_when: "'(using password: NO)' in mysql_admin_root_password_result.stderr"
+#
+#  - name: Tune MySQL configuration
+#    template:
+#      src: ./resources/my.cnf
+#      dest: /etc/my.cnf
+#      mode: 0644
+#    notify:
+#      - restart mysqld
+#
+#  - name: Create my datatable
+#    mysql_db:
+#      login_user: root
+#      login_password: "password"
+#      name: MY_DATATABLE
+#      encoding: utf8
+#      collation: utf8_bin
+
+#  - name: Create MY_DBA user in MySQL and grant privileges
+#    mysql_user:
+#      login_user: root
+#      login_password: "password"
+#      user: MY_DBA
+#      password: "password"
+#      host: '%'
+#      priv: 'MY_DATATABLE.*:ALL'
+
+  ## Handlers ##
+#handlers:
+#  - name: restart mysqld
+#    service:
+#      name: mysqld
+#      state: restarted
+
+
+- name: adding epel repo
+  package: name={{item}} state=installed
+  with_items:
+    - epel-release
+
+- name: Get mysql community edition
+  yum:  name=http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+        state=present
+
+- name: install mysql CE
+  yum: name=mysql-server state=present
+
+- name: install MySql-Python
+  yum: name=MySQL-python state=present
+
+
+- name: start mysql CE
+  service: name=mysqld  state=started
+
+- name: set the root password
+  mysql_user: name=root host="{{item}}"
+              password={{ mysql_root_pass }}
+              priv='*.*:ALL,GRANT'
+              login_user=root
+              login_password=""
+              state=present
+  with_items:
+    - "{{ ansible_default_ipv4.address }}"
+    - localhost
+    - 127.0.0.1
+    - ::1
+  ignore_errors: yes
+
+- name: write .my.cnf file in root directory
+  template: src=my.cnf.j2 dest=/root/.my.cnf mode=0600
+
+
+- name: Remove anonymous users
+  mysql_user: name="" state=absent
+  ignore_errors: yes
+
+- name: Remove test database
+  mysql_db: name=test state=absent
+  ignore_errors: yes

@@ -1,0 +1,5 @@
+---
+# tasks file for ot.httpd
+
+- name: install httpd
+  yum: name=httpd state=latest

@@ -1,0 +1,4 @@
+---
+# handlers file for ot.mysql
+- name: mysql restart
+  service: name=mysql state=restarted
